@@ -1,0 +1,103 @@
+---
+title: "p8105_hw3_ob2305"
+author: "Olya Besedina"
+data: "10/09/2019"
+output: github_document
+---
+  
+```{r setup, include=FALSE}
+library(tidyverse)
+library(viridis)
+
+knitr::opts_chunk$set(
+ 	echo = TRUE,
+ 	warning = FALSE,
+ 	fig.width = 8, 
+   fig.height = 6,
+   out.width = "90%"
+ )
+
+options(
+   ggplot2.continuous.colour = "viridis",
+   ggplot2.continuous.fill = "viridis"
+ )
+
+ scale_colour_discrete = scale_colour_viridis_d
+ scale_fill_discrete = scale_fill_viridis_d
+
+ theme_set(theme_minimal() + theme(legend.position = "bottom"))
+```
+
+# Problem 1
+
+```{r include=FALSE}
+library(p8105.datasets)
+data("instacart")
+```
+
+How many aisles are there, and which aisles are the most items ordered from?
+
+There are 134 isles and most items are ordered from the fresh vegetables aisle. 
+
+```{r}
+instacart %>% 
+  count(aisle)
+
+instacart %>% 
+  count(aisle, sort = TRUE) %>% 
+  knitr::kable()
+
+```
+
+Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
+
+```{r}
+
+instacart %>% 
+  count(aisle, sort = TRUE) %>% 
+  filter( n > 10000) %>% 
+  ggplot(aes(x = n, y = aisle))+
+  geom_point()
+```
+
+Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
+
+```{r}
+bi = instacart %>%
+  filter(aisle == "baking ingredients") %>%
+  group_by(aisle, product_name) %>% 
+  summarize(n = n()) %>% 
+  arrange(desc(n)) %>% 
+  head(3)
+
+dfc = instacart %>%
+  filter(aisle == "dog food care") %>% 
+  group_by(aisle, product_name) %>% 
+  summarize(n = n()) %>%
+  arrange(desc(n)) %>% 
+  head(3)
+
+pvf = instacart %>%
+  filter(aisle == "packaged vegetables fruits") %>% 
+  group_by(aisle, product_name) %>% 
+  summarize(n = n()) %>%
+  arrange(desc(n)) %>% 
+  head(3) 
+
+aisles_3 = 
+  bind_rows(bi, dfc, pvf) %>%
+  arrange(desc(n))
+```
+
+Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
+
+```{r}
+
+```
+
+
+
+
+
+
+
