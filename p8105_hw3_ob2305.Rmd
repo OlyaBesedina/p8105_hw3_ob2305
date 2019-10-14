@@ -201,20 +201,18 @@ chf = read_csv(file = "./data/accel_data.csv") %>%
     names_prefix = "activity_",
     values_to = "value")
 
-view(chf)
-
 # describe data
 ```
 
 Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
 
 ```{r, eval=FALSE }
-chf = chf %>% 
+chf %>% 
   group_by(week, day) %>% 
   summarize(
-    total_activity = sum(value)
+    total_activity_per_day = sum(value)
   ) %>% 
-  ggplot(aes(x = week, y = total_activity, color = day))+
+  ggplot(aes(x = week, y = total_activity_per_day, color = day))+
   geom_line()
 
 # describe
@@ -225,24 +223,26 @@ Accelerometer data allows the inspection activity over the course of the day. Ma
 ```{r}
 hour_data = 
   chf %>%
-  group_by(week, day) %>%
+  group_by(week, day, day_id) %>%
   mutate(
-   activity_time = as.numeric(activity_time)) %>% 
-  mutate(
-    hour_activity = (activity_time)%/%60) %>%
+   activity_time = as.numeric(activity_time),
+    hour_activity = (activity_time)%/%60)
+
+hour_data_2 = hour_data %>% 
   group_by(hour_activity, day, week) %>%
   summarize(
-    hour_value = (sum(value))%/%60)
+    activity_value_per_hour = (sum(value))%/%60) %>% head()
 ```
 
 ```{r}
 hour_data %>% 
   filter(hour_activity != "24") %>% 
-  ggplot(aes(x = hour_value, y = hour_activity, color = day))+
-  geom_line()
+  ggplot(aes(x = activity_time, y = value, color = day, group = day_id))+
+  geom_line(alpha = .5)
 ```
 
 
+make graph that represends 35 lines, color by day of the week
 
 
 
